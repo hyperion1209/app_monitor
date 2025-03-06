@@ -1,6 +1,11 @@
 from setuptools import find_namespace_packages, setup
 
-INSTALL_REQUIREMENTS = []
+INSTALL_REQUIREMENTS = [
+    "requests",
+    "types-requests",
+    "retry",
+    "types-retry",
+]
 
 
 BUILD_REQUIREMENTS = [
@@ -26,20 +31,10 @@ DEV_REQUIREMENTS = [
 ]
 
 
-def _get_bitbucket_repo_url(repository: str, project: str = "NETAUTO") -> str:
-    return (
-        "https://bitbucket.workday.com/projects/" f"{project}/repos/{repository}/browse"
-    )
-
-
 setup(
     name="app_monitor",
     use_scm_version={"write_to": "src/app_monitor/_version.py"},
     description=("App that monitors app response"),
-    license="Proprietary",
-    maintainer="Workday NetAuto",
-    maintainer_email="netauto.team@workday.com",
-    download_url=_get_bitbucket_repo_url("app_monitor"),
     package_dir={"": "src"},
     packages=find_namespace_packages(where="src"),
     package_data={"app_monitor": ["py.typed"]},
@@ -51,11 +46,7 @@ setup(
         "docs": DOCS_REQUIREMENTS,
     },
     setup_requires=["wheel", "setuptools_scm"],
-    classifiers=[
-        "Development Status :: 4 - Beta",
-        "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3.11",
-        "Topic :: Software Development :: Libraries :: Application Frameworks",
-        "License :: Other/Proprietary License",
+    scripts=[
+        "run_monitor.py",
     ],
 )

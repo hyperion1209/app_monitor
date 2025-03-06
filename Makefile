@@ -1,13 +1,8 @@
 PACKAGE = $(shell python setup.py --name)
 
-FWDPORT ?= 8000
-
 define NO_VENV_ERROR_MESSAGE
 You need to have a Python VirtualEnv enabled.
-
-For help on how to set one up see https://wolinks.com/netauto_env_setup
 endef
-
 
 .PHONY: check_venv
 check_venv:
@@ -33,7 +28,7 @@ clean: check_venv
 
 .PHONY: fmt
 fmt: check_venv
-	python -m black --target-version py36 --line-length 80 .
+	python -m black --target-version py311 --line-length 80 .
 
 .PHONY: lint
 lint: check_venv
@@ -43,7 +38,3 @@ lint: check_venv
 .PHONY: test
 test: check_venv
 	@python -m pytest -v
-
-.PHONY: docs
-docs: check_venv
-	@mkdocs serve -a 0.0.0.0:$(FWDPORT)
