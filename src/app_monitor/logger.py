@@ -46,9 +46,6 @@ def setup_logger(logger_name: Optional[str] = None) -> logging.Logger:
     # Get the root logger
     logger = logging.getLogger(logger_name)
 
-    # Do not propagate to the root logger
-    logger.propagate = False
-
     # Set default logging level
     logger.setLevel(logging.WARNING)
 
@@ -65,6 +62,9 @@ def setup_logger(logger_name: Optional[str] = None) -> logging.Logger:
 
 
 def set_file_handler(log_path: Path = Path("monitor.log")) -> None:
+    for handler in LOGGER.handlers:
+        if isinstance(handler, logging.FileHandler):
+            LOGGER.removeHandler(handler)
     file_handler = logging.FileHandler(log_path)
     file_handler.setFormatter(LevelFormatter(logger=LOGGER))
     LOGGER.addHandler(file_handler)

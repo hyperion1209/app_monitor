@@ -1,10 +1,8 @@
 from pathlib import Path
 import pytest
-from app_monitor.app_config import load_config
 import tempfile
-from json.decoder import JSONDecodeError
 
-from app_monitor.app_config import AppConfig
+from app_monitor.app_config import AppConfig, ConfigValidationError, load_config
 
 
 @pytest.mark.parametrize(
@@ -31,7 +29,7 @@ from app_monitor.app_config import AppConfig
             """
             bad config
             """,
-            JSONDecodeError,
+            ConfigValidationError,
         ),
         (  # Missing endpoints
             """
@@ -40,7 +38,7 @@ from app_monitor.app_config import AppConfig
                 "warn_threshold": 1.0
             }
             """,
-            ValueError
+            ConfigValidationError,
         ),
         (  # Endpoints is not a list
             """
@@ -50,7 +48,17 @@ from app_monitor.app_config import AppConfig
                 "endpoints": "http://example1.com"
             }
             """,
-            ValueError
+            ConfigValidationError,
+        ),
+        (  # Endpoints list is empty
+            """
+            {
+                "check_interval": 10,
+                "warn_threshold": 1.0,
+                "endpoints": []
+            }
+            """,
+            ConfigValidationError,
         ),
         (  # Invalid URL
             """
@@ -63,7 +71,7 @@ from app_monitor.app_config import AppConfig
                 ]
             }
             """,
-            ValueError
+            ConfigValidationError,
         ),
         (  # Missing check_interval
             """
@@ -75,7 +83,7 @@ from app_monitor.app_config import AppConfig
                 ]
             }
             """,
-            ValueError
+            ConfigValidationError,
         ),
         (  # check_interval is not an integer
             """
@@ -88,7 +96,7 @@ from app_monitor.app_config import AppConfig
                 ]
             }
             """,
-            ValueError
+            ConfigValidationError,
         ),
         (  # Missing warn_threshold
             """
@@ -100,7 +108,7 @@ from app_monitor.app_config import AppConfig
                 ]
             }
             """,
-            ValueError
+            ConfigValidationError,
         ),
         (  # warn_threshold is not a number
             """
@@ -113,7 +121,7 @@ from app_monitor.app_config import AppConfig
                 ]
             }
             """,
-            ValueError
+            ConfigValidationError,
         ),
     ],
 )

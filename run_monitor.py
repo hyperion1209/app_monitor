@@ -33,7 +33,8 @@ def _parse_args():
 
 #     # Start monitor
 #     app_monitor = AppMonitor(app_config)
-#     app_monitor.start()
+#     while True:
+#         app_monitor.probe_all_endpoints()
 
 
 def main(args: argparse.Namespace):

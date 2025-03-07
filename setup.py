@@ -3,8 +3,6 @@ from setuptools import find_namespace_packages, setup
 INSTALL_REQUIREMENTS = [
     "requests",
     "types-requests",
-    "retry",
-    "types-retry",
     "httpx",
     "validators",
 ]
@@ -19,6 +17,7 @@ BUILD_REQUIREMENTS = [
     "pytest",
     "pytest-cov",
     "pylint",
+    "responses",
 ]
 
 
