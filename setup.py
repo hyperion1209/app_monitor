@@ -5,6 +5,8 @@ INSTALL_REQUIREMENTS = [
     "types-requests",
     "retry",
     "types-retry",
+    "httpx",
+    "validators",
 ]
 
 

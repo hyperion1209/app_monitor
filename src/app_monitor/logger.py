@@ -50,7 +50,7 @@ def setup_logger(logger_name: Optional[str] = None) -> logging.Logger:
     logger.propagate = False
 
     # Set default logging level
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.WARNING)
 
     # Purge any previously registered handlers on the logger
     for handler in logger.handlers:

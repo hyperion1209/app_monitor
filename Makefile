@@ -37,4 +37,4 @@ lint: check_venv
 
 .PHONY: test
 test: check_venv
-	@python -m pytest -v
+	@python -m pytest -v --cov=src --cov-report=term-missing --cov-report=html tests
