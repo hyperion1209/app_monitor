@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import call, patch, PropertyMock
+from unittest.mock import patch, PropertyMock
 from app_monitor.async_monitor import AsyncAppMonitor
 import httpx
 from app_monitor.app_config import AppConfig
@@ -46,7 +46,7 @@ async def test_supervisor(mocked, app_config, httpx_mock: HTTPXMock, caplog):
             request=httpx.Request("GET", "http://example2.com/status"),
             response=httpx.Response(status_code=500),
             message="Internal Server Error",
-        )
+        ),
     )
     # One success for example3.com/status with status code 200
     httpx_mock.add_response(
@@ -59,11 +59,11 @@ async def test_supervisor(mocked, app_config, httpx_mock: HTTPXMock, caplog):
     # Assert
     print(f"my logs:\n{caplog.text}")
     for msg in [
-        "ERROR    root:async_monitor.py:57 Endpoint http://example1.com/status "
+        "ERROR    root:async_monitor.py:59 Endpoint http://example1.com/status "
         "is unreachable: Connection to server took too long",
-        "ERROR    root:async_monitor.py:53 Endpoint http://example2.com/status "
+        "ERROR    root:async_monitor.py:55 Endpoint http://example2.com/status "
         "returned status code 500",
-        "WARNING  root:async_monitor.py:61 Endpoint http://example3.com/status "
+        "WARNING  root:async_monitor.py:66 Endpoint http://example3.com/status "
         "took too long to respond: 0.00 seconds",
     ]:
         assert msg in caplog.text

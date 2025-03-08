@@ -75,13 +75,13 @@ def test_app_monitor(mocked, app_config, caplog):
     # Assert
     print(f"my logs:\n{caplog.text}")
     for msg in [
-        "WARNING  root:monitor.py:40 Endpoint http://example1.com/status took "
+        "WARNING  root:monitor.py:42 Endpoint http://example1.com/status took "
         "too long to respond",
-        "ERROR    root:monitor.py:37 Endpoint http://example2.com/status "
+        "ERROR    root:monitor.py:39 Endpoint http://example2.com/status "
         "returned status code 404",
-        "WARNING  root:monitor.py:40 Endpoint http://example2.com/status took "
+        "WARNING  root:monitor.py:42 Endpoint http://example2.com/status took "
         "too long to respond",
-        "ERROR    root:monitor.py:29 All retries failed when probing endpoint "
+        "ERROR    root:monitor.py:31 All retries failed when probing endpoint "
         "http://example3.com/status",
     ]:
         assert msg in caplog.text

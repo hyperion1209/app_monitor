@@ -25,7 +25,9 @@ class AsyncAppMonitor:
         attempt = 0
         while attempt < self._app_config.retries:
             try:
-                resp = await client.get(endpoint, timeout=5, follow_redirects=True)
+                resp = await client.get(
+                    endpoint, timeout=5, follow_redirects=True
+                )
                 resp.raise_for_status()
                 return ProbeResult(
                     endpoint=endpoint,
@@ -57,15 +59,17 @@ class AsyncAppMonitor:
             LOGGER.error(msg)
             send_slack_notification(msg)
         else:
-            if probe_result is not None and probe_result.response_time > warn_threshold:
+            if (
+                probe_result is not None
+                and probe_result.response_time > warn_threshold
+            ):
                 LOGGER.warning(
                     f"Endpoint {endpoint} took too long to respond: "
                     f"{probe_result.response_time:.2f} seconds"
                 )
 
     async def supervisor(self) -> None:
-        transport = AsyncHTTPTransport(retries=3)
-        async with httpx.AsyncClient(transport=transport) as client:
+        async with httpx.AsyncClient() as client:
             while self.RUN:
                 tasks = [
                     self.check_endpoint_health(

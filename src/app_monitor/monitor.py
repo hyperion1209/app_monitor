@@ -14,7 +14,9 @@ class AppMonitor:
     def _setup_session(self) -> requests.Session:
         session = requests.Session()
         adapter = requests.adapters.HTTPAdapter(
-            max_retries=Retry(total=3, status_forcelist=[500, 502])
+            max_retries=Retry(
+                total=self._app_config.retries, status_forcelist=[500, 502]
+            )
         )
         session.mount("http://", adapter)
         return session
