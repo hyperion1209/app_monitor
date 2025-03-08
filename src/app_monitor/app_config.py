@@ -7,8 +7,9 @@ from json.decoder import JSONDecodeError
 
 class AppConfig(NamedTuple):
     endpoints: list[str]
-    check_interval: int
-    warn_threshold: float | int
+    check_interval: int = 300
+    warn_threshold: float | int = 3.0
+    retries: int = 3
 
 
 class ConfigValidationError(Exception):
@@ -44,6 +45,12 @@ def validate_config(raw_config: dict) -> None:
 
     if not isinstance(raw_config["warn_threshold"], (int, float)):
         raise ConfigValidationError("'warn_threshold' must be a number")
+
+    if "retries" not in raw_config:
+        raise ConfigValidationError("Missing 'retries' key in configuration")
+
+    if not isinstance(raw_config["retries"], int):
+        raise ConfigValidationError("'retries' must be an integer")
 
 
 def load_config(config_path: Path) -> AppConfig:

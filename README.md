@@ -3,7 +3,8 @@
 ## To-do List
 - [x] Validate input config
 - [x] Implement asyncio
-- [ ] Add retries to asyncio version
-- [ ] Get other metrics from get request body
-- [ ] Add unit tests
+- [x] Add retries to asyncio version
+- [x] Get other metrics from get request body
+- [x] Add unit tests
+- [ ] Add retries to app_config
 

@@ -1,11 +1,10 @@
 import pytest
-import requests
 
 from app_monitor.app_config import AppConfig
-from app_monitor.async_monitor import ProbeResult
 from app_monitor.monitor import AppMonitor
 import responses
 from responses.registries import OrderedRegistry
+from unittest.mock import PropertyMock, patch
 
 
 @pytest.fixture(autouse=True)
@@ -13,6 +12,7 @@ def app_config() -> AppConfig:
     return AppConfig(
         check_interval=1,
         warn_threshold=0,
+        retries=2,
         endpoints=[
             "http://example1.com/status",
             "http://example2.com/status",
@@ -22,9 +22,12 @@ def app_config() -> AppConfig:
 
 
 @responses.activate(registry=OrderedRegistry)
-def test_app_monitor(app_config, caplog):
+@patch.object(AppMonitor, "RUN", new_callable=PropertyMock)
+def test_app_monitor(mocked, app_config, caplog):
     # Setup
     app_monitor = AppMonitor(app_config)
+    mocked.side_effect = [True, False]
+
     responses.get(
         "http://example1.com/status",
         status=500,
@@ -67,15 +70,18 @@ def test_app_monitor(app_config, caplog):
     )
 
     # Exercise
-    # result = app_monitor.probe_endpoint("http://example1.com/status")
-    app_monitor.probe_all_endpoints()
+    app_monitor.run()
 
     # Assert
-    print(f"my stuff: {caplog.text}")
+    print(f"my logs:\n{caplog.text}")
     for msg in [
-        "WARNING  root:monitor.py:38 Endpoint http://example1.com/status took too long to respond",
-        "Endpoint http://example2.com/status returned status code 404",
-        "WARNING  root:monitor.py:38 Endpoint http://example2.com/status took too long to respond",
-        "ERROR    root:monitor.py:27 All retries failed when probing endpoint http://example3.com/status",
+        "WARNING  root:monitor.py:40 Endpoint http://example1.com/status took "
+        "too long to respond",
+        "ERROR    root:monitor.py:37 Endpoint http://example2.com/status "
+        "returned status code 404",
+        "WARNING  root:monitor.py:40 Endpoint http://example2.com/status took "
+        "too long to respond",
+        "ERROR    root:monitor.py:29 All retries failed when probing endpoint "
+        "http://example3.com/status",
     ]:
         assert msg in caplog.text

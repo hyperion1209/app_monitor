@@ -13,6 +13,7 @@ from app_monitor.app_config import AppConfig, ConfigValidationError, load_config
             {
                 "check_interval": 10,
                 "warn_threshold": 1.0,
+                "retries": 3,
                 "endpoints": [
                     "http://example1.com",
                     "http://example2.com"
@@ -21,6 +22,7 @@ from app_monitor.app_config import AppConfig, ConfigValidationError, load_config
             """,
             AppConfig(
                 check_interval=10,
+                retries=3,
                 warn_threshold=1.0,
                 endpoints=["http://example1.com", "http://example2.com"],
             ),
@@ -35,7 +37,8 @@ from app_monitor.app_config import AppConfig, ConfigValidationError, load_config
             """
             {
                 "check_interval": 10,
-                "warn_threshold": 1.0
+                "warn_threshold": 1.0,
+                "retries": 3
             }
             """,
             ConfigValidationError,
@@ -45,6 +48,7 @@ from app_monitor.app_config import AppConfig, ConfigValidationError, load_config
             {
                 "check_interval": 10,
                 "warn_threshold": 1.0,
+                "retries": 3,
                 "endpoints": "http://example1.com"
             }
             """,
@@ -55,6 +59,7 @@ from app_monitor.app_config import AppConfig, ConfigValidationError, load_config
             {
                 "check_interval": 10,
                 "warn_threshold": 1.0,
+                "retries": 3,
                 "endpoints": []
             }
             """,
@@ -65,6 +70,7 @@ from app_monitor.app_config import AppConfig, ConfigValidationError, load_config
             {
                 "check_interval": 10,
                 "warn_threshold": 1.0,
+                "retries": 3,
                 "endpoints": [
                     "http://example1",
                     "http://example2.com"
@@ -77,6 +83,7 @@ from app_monitor.app_config import AppConfig, ConfigValidationError, load_config
             """
             {
                 "warn_threshold": 1.0,
+                "retries": 3,
                 "endpoints": [
                     "http://example1.com",
                     "http://example2.com"
@@ -90,6 +97,7 @@ from app_monitor.app_config import AppConfig, ConfigValidationError, load_config
             {
                 "check_interval": "string",
                 "warn_threshold": 1.0,
+                "retries": 3,
                 "endpoints": [
                     "http://example1.com",
                     "http://example2.com"
@@ -102,6 +110,7 @@ from app_monitor.app_config import AppConfig, ConfigValidationError, load_config
             """
             {
                 "check_interval": 10,
+                "retries": 3,
                 "endpoints": [
                     "http://example1.com",
                     "http://example2.com"
@@ -115,6 +124,34 @@ from app_monitor.app_config import AppConfig, ConfigValidationError, load_config
             {
                 "check_interval": 10,
                 "warn_threshold": "string",
+                "retries": 3,
+                "endpoints": [
+                    "http://example1.com",
+                    "http://example2.com"
+                ]
+            }
+            """,
+            ConfigValidationError,
+        ),
+        (  # Missing retries
+            """
+            {
+                "check_interval": 10,
+                "warn_threshold": 1.0,
+                "endpoints": [
+                    "http://example1.com",
+                    "http://example2.com"
+                ]
+            }
+            """,
+            ConfigValidationError,
+        ),
+        (  # retries is not a number
+            """
+            {
+                "check_interval": 10,
+                "warn_threshold": 1.0,
+                "retries": "string",
                 "endpoints": [
                     "http://example1.com",
                     "http://example2.com"

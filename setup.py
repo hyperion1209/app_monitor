@@ -18,6 +18,8 @@ BUILD_REQUIREMENTS = [
     "pytest-cov",
     "pylint",
     "responses",
+    "pytest-asyncio",
+    "pytest-httpx",
 ]
 
 

@@ -6,6 +6,8 @@ from app_monitor.logger import LOGGER, send_slack_notification
 
 
 class AppMonitor:
+    RUN = True
+
     def __init__(self, app_config: AppConfig) -> None:
         self._app_config: AppConfig = app_config
 
@@ -44,3 +46,7 @@ class AppMonitor:
         for endpoint in self._app_config.endpoints:
             self.probe_endpoint(endpoint)
         time.sleep(self._app_config.check_interval)
+
+    def run(self) -> None:
+        while self.RUN:
+            self.probe_all_endpoints()
