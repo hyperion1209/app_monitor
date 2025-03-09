@@ -1,4 +1,5 @@
 import pytest
+import re
 
 from app_monitor.app_config import AppConfig
 from app_monitor.monitor import AppMonitor
@@ -75,13 +76,21 @@ def test_app_monitor(mocked, app_config, caplog):
     # Assert
     print(f"my logs:\n{caplog.text}")
     for msg in [
-        "WARNING  root:monitor.py:42 Endpoint http://example1.com/status took "
-        "too long to respond",
-        "ERROR    root:monitor.py:39 Endpoint http://example2.com/status "
-        "returned status code 404",
-        "WARNING  root:monitor.py:42 Endpoint http://example2.com/status took "
-        "too long to respond",
-        "ERROR    root:monitor.py:31 All retries failed when probing endpoint "
-        "http://example3.com/status",
+        re.compile(
+            r"WARNING\s+root:monitor.py:\d+ Endpoint http://example1.com/status"
+            r" took too long to respond"
+        ),
+        re.compile(
+            r"ERROR\s+root:monitor.py:\d+ Endpoint http://example2.com/status "
+            r"returned status code 404"
+        ),
+        re.compile(
+            r"WARNING\s+root:monitor.py:\d+ Endpoint http://example2.com/status"
+            r" took too long to respond",
+        ),
+        re.compile(
+            r"ERROR\s+root:monitor.py:\d+ All retries failed when probing "
+            r"endpoint http://example3.com/status",
+        ),
     ]:
-        assert msg in caplog.text
+        assert msg.search(caplog.text)

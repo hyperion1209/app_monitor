@@ -1,3 +1,5 @@
+"""Module for loading and validating the application configuration."""
+
 import json
 from pathlib import Path
 import validators
@@ -6,6 +8,8 @@ from json.decoder import JSONDecodeError
 
 
 class AppConfig(NamedTuple):
+    """NamedTuple for the application configuration."""
+
     endpoints: list[str]
     check_interval: int = 300
     warn_threshold: float | int = 3.0
@@ -17,6 +21,12 @@ class ConfigValidationError(Exception):
 
 
 def validate_config(raw_config: dict) -> None:
+    """
+    Validate the application configuration.
+
+    Args:
+        raw_config (dict): The raw configuration dictionary.
+    """
     if "endpoints" not in raw_config:
         raise ConfigValidationError("Missing 'endpoints' key in configuration")
 
@@ -54,6 +64,15 @@ def validate_config(raw_config: dict) -> None:
 
 
 def load_config(config_path: Path) -> AppConfig:
+    """
+    Load and validate the application configuration.
+
+    Args:
+        config_path (Path): The path to the configuration file.
+
+    Returns:
+        AppConfig: The validated application configuration.
+    """
     with open(config_path, "r") as file:
         try:
             raw_config = json.load(file)

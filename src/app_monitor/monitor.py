@@ -1,3 +1,5 @@
+"""Module contains the logic for the serial application monitor."""
+
 import requests
 import time
 from requests.adapters import Retry
@@ -6,12 +8,19 @@ from app_monitor.logger import LOGGER, send_slack_notification
 
 
 class AppMonitor:
+    """Serial application monitor"""
+
     RUN = True
 
     def __init__(self, app_config: AppConfig) -> None:
         self._app_config: AppConfig = app_config
 
     def _setup_session(self) -> requests.Session:
+        """Set up a session with retries
+
+        Returns:
+            requests.Session: The session object
+        """
         session = requests.Session()
         adapter = requests.adapters.HTTPAdapter(
             max_retries=Retry(
@@ -22,6 +31,11 @@ class AppMonitor:
         return session
 
     def probe_endpoint(self, endpoint: str) -> None:
+        """Probe an endpoints and log the result
+
+        Args:
+            endpoint (str): The endpoint to probe
+        """
         session = self._setup_session()
 
         t = time.time()
@@ -45,10 +59,12 @@ class AppMonitor:
             )
 
     def probe_all_endpoints(self) -> None:
+        """Probe all endpoints"""
         for endpoint in self._app_config.endpoints:
             self.probe_endpoint(endpoint)
         time.sleep(self._app_config.check_interval)
 
     def run(self) -> None:
+        """Run the monitor"""
         while self.RUN:
             self.probe_all_endpoints()

@@ -1,3 +1,5 @@
+"""Contains code for setting up the logger and sending slack notifications"""
+
 import logging
 from pathlib import Path
 import sys
@@ -43,6 +45,15 @@ class LevelFormatter(logging.Formatter):
 
 
 def setup_logger(logger_name: Optional[str] = None) -> logging.Logger:
+    """Set up the logger for the application
+
+    Args:
+        logger_name (str): The name of the logger to set up. If None, the root
+                    logger will be used
+
+    Returns:
+        logging.Logger: The logger object
+    """
     # Get the root logger
     logger = logging.getLogger(logger_name)
 
@@ -62,6 +73,11 @@ def setup_logger(logger_name: Optional[str] = None) -> logging.Logger:
 
 
 def set_file_handler(log_path: Path = Path("monitor.log")) -> None:
+    """Set up a file handler for the logger
+
+    Args:
+        log_path (Path): The path to the log file
+    """
     for handler in LOGGER.handlers:
         if isinstance(handler, logging.FileHandler):
             LOGGER.removeHandler(handler)
@@ -74,4 +90,9 @@ LOGGER: logging.Logger = setup_logger()
 
 
 def send_slack_notification(message: str) -> None:
+    """Send a slack notification
+
+    Args:
+        message (str): The message to send
+    """
     print(f"Sending slack notification: {message}")

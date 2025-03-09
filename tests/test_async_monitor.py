@@ -1,3 +1,4 @@
+import re
 import pytest
 from unittest.mock import patch, PropertyMock
 from app_monitor.async_monitor import AsyncAppMonitor
@@ -54,16 +55,30 @@ async def test_supervisor(mocked, app_config, httpx_mock: HTTPXMock, caplog):
     )
 
     # Exercise
-    await async_monitor.supervisor()
+    with patch(
+        "app_monitor.async_monitor.send_slack_notification"
+    ) as mocked_slack:
+        await async_monitor.supervisor()
 
     # Assert
     print(f"my logs:\n{caplog.text}")
     for msg in [
-        "ERROR    root:async_monitor.py:59 Endpoint http://example1.com/status "
-        "is unreachable: Connection to server took too long",
-        "ERROR    root:async_monitor.py:55 Endpoint http://example2.com/status "
-        "returned status code 500",
-        "WARNING  root:async_monitor.py:66 Endpoint http://example3.com/status "
-        "took too long to respond: 0.00 seconds",
+        re.compile(
+            r"ERROR\s+root:async_monitor.py:\d+ Endpoint http://example1.com/"
+            r"status is unreachable: Connection to server took too long",
+        ),
+        re.compile(
+            r"ERROR\s+root:async_monitor.py:\d+ Endpoint http://example1.com/"
+            r"status is unreachable: Connection to server took too long",
+        ),
+        re.compile(
+            r"ERROR\s+root:async_monitor.py:\d+ Endpoint http://example2.com/"
+            r"status returned status code 500",
+        ),
+        re.compile(
+            r"WARNING\s+root:async_monitor.py:\d+ Endpoint http://example3.com/"
+            r"status took too long to respond: 0.00 seconds",
+        ),
     ]:
-        assert msg in caplog.text
+        assert msg.search(caplog.text)
+        assert mocked_slack.call_count == 2
