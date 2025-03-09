@@ -86,6 +86,17 @@ def set_file_handler(log_path: Path = Path("monitor.log")) -> None:
     LOGGER.addHandler(file_handler)
 
 
+def set_logging_level(level: int) -> None:
+    """Change the logging level for the logger
+
+    Args:
+        level: The logging level. See the `logging` module for more info
+        propagate: Whether to propage the logging level change to loggers of
+                   upstream dependencies
+    """
+    LOGGER.setLevel(level)
+
+
 LOGGER: logging.Logger = setup_logger()
 
 
