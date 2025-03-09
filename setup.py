@@ -23,14 +23,9 @@ BUILD_REQUIREMENTS = [
 ]
 
 
-DOCS_REQUIREMENTS = []
-
-
 DEV_REQUIREMENTS = [
     *BUILD_REQUIREMENTS,
-    *DOCS_REQUIREMENTS,
-    "ipython>=7.4.0",
-    "jedi<0.18",
+    "ipython",
 ]
 
 
@@ -46,7 +41,6 @@ setup(
     extras_require={
         "testing": BUILD_REQUIREMENTS,
         "dev": DEV_REQUIREMENTS,
-        "docs": DOCS_REQUIREMENTS,
     },
     setup_requires=["wheel", "setuptools_scm"],
     scripts=[
